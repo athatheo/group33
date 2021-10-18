@@ -29,7 +29,7 @@ from pyson.ObjectMapper import ObjectMapper
 from tudelft.utilities.listener.DefaultListenable import DefaultListenable
 from uri.uri import URI  # type: ignore 
 
-from ai2021 import RandomParty
+from ai2021.group33 import Group33Party
 
 
 class MyConn(ConnectionEnd[Inform, Action], DefaultListenable):
@@ -55,7 +55,7 @@ class MyConn(ConnectionEnd[Inform, Action], DefaultListenable):
     def getActions(self)-> List[Action]:
         return self._actions
     
-class RandomPartyTest(unittest.TestCase):
+class Group33PartyTest(unittest.TestCase):
     pyson = ObjectMapper()
     
     PARTY1 = PartyId("party1")
@@ -70,16 +70,16 @@ class RandomPartyTest(unittest.TestCase):
     profile:UtilitySpace = pyson.parse(json.loads(serialized), LinearAdditive) #type:ignore     
 
     def setUp(self):
-        self.party=RandomParty()
+        self.party=Group33Party()
         self.connection = MyConn()
         # we load the profile here too, to find a good bid
     
 
     def test_smoke(self):
-        RandomParty()
+        Group33Party()
         
     def testConnect(self):
-        party=RandomParty()
+        party=Group33Party()
         party.connect(self.connection)
         party.disconnect()
         
