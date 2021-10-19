@@ -30,7 +30,7 @@ from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.utils import val
 
 
-class RandomParty (DefaultParty):
+class Group33Party(DefaultParty):
     """
     Offers random bids until a bid with sufficient utility is offered.
     """
@@ -39,6 +39,10 @@ class RandomParty (DefaultParty):
         self.getReporter().log(logging.INFO,"party is initialized")
         self._profile = None
         self._lastReceivedBid:Bid = None
+
+        # Acceptance Strategy params
+        self.highTime = 0.99
+        self.bidsBuffer = []
 
     # Override
     def notifyChange(self, info: Inform):
@@ -56,6 +60,7 @@ class RandomParty (DefaultParty):
             action:Action=cast( ActionDone,info).getAction()
             if isinstance(action, Offer):
                 self._lastReceivedBid = cast(Offer, action).getBid()
+                self.bidsBuffer.append(self._lastReceivedBid)
         elif isinstance(info, YourTurn):
             self._myTurn()
             if isinstance(self._progress, ProgressRounds) :
@@ -105,7 +110,37 @@ class RandomParty (DefaultParty):
             return False
         profile = self._profile.getProfile()
         if isinstance(profile, UtilitySpace):
-            return profile.getUtility(bid) > 0.6
+            curProgress = self._progress.getCurrentRound() -1
+            totalDuration = self._progress.getDuration() - 1
+            if curProgress < 0.5*totalDuration:
+                # Use next criterion
+                # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
+                nextBid = self._getRandomBid(self._profile.getProfile().getDomain())
+                return profile.getUtility(bid) >= profile.getUtility(nextBid)
+            if curProgress >= 0.5*totalDuration:
+                # Use combi criterion
+                # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
+                nextBid = self._getRandomBid(self._profile.getProfile().getDomain())
+                ac_next = profile.getUtility(bid) >= profile.getUtility(nextBid)
+                ac_time = curProgress >= self.highTime
+                utils = []
+                windowStart = curProgress - (totalDuration - curProgress)
+                windowEnd = curProgress + 1
+                for bids in self.bidsBuffer[windowStart:windowEnd]:
+                    for oneBid in [bids]: # Assuming that in each time step, there will be
+                        # multiple bids
+                        utils.append(profile.getUtility(oneBid))
+                if len(utils) > 0:
+                    if False: # TODO - If the party has the most power, accept the maximum
+                        ac_combi = profile.getUtility(bid) >= max(utils)
+                    elif True: # TODO - If the party doesnt have the most power, accept the average
+                        ac_combi = profile.getUtility(bid) >= sum(utils)/len(utils)
+                    return (ac_next or ac_time) and ac_combi
+                else:
+                    return False
+
+
+            #return profile.getUtility(bid) > 0.6
         raise Exception("Can not handle this type of profile")
 
     def _getRandomBid(self, domain:Domain) -> Bid:
@@ -119,7 +154,9 @@ class RandomParty (DefaultParty):
         @return our next Votes.
         '''
         val = self._settings.getParameters().get("minPower");
+        # TODO - This should be set to the minimum power in order for a government to form
         minpower:int = val if isinstance(val, int) else 2
+        # TODO - This should be set to the total power of all parties
         val = self._settings.getParameters().get("maxPower");
         maxpower:int = val if isinstance(val,int) else  9999999;
 

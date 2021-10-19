@@ -1,3 +1,3 @@
-from ai2021 import RandomParty
+from ai2021.group33 import Group33Party
 def party():
-    return RandomParty
+    return Group33Party
