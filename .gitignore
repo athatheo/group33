@@ -1,2 +1,6 @@
 .idea/*
 .svn/*
+dist/
+ai2021.egg-info/
+dist/*
+ai2021.egg-info/*

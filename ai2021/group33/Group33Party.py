@@ -99,7 +99,7 @@ class Group33Party(DefaultParty):
             action = Accept(self._me, self._lastReceivedBid)
         else:
             for _attempt in range(20):
-                bid = self._getRandomBid(self._profile.getProfile().getDomain())
+                bid = self._getBid(self._profile.getProfile().getDomain())
                 if self._isGood(bid):
                     break
             action = Offer(self._me, bid);
@@ -143,9 +143,18 @@ class Group33Party(DefaultParty):
             #return profile.getUtility(bid) > 0.6
         raise Exception("Can not handle this type of profile")
 
-    def _getRandomBid(self, domain:Domain) -> Bid:
+    def _getBid(self, domain:Domain) -> Bid:
         allBids = AllBidsList(domain)
-        return allBids.get(randint(0, allBids.size()-1))
+        max_util = -1
+        max_bid = None
+        profile = self._profile.getProfile()
+        for bid in allBids:
+            util = profile.getUtility(bid)
+            if util > max_util:
+                max_util = util
+                max_bid = bid
+
+        return max_bid
     
     def _vote(self, voting:Voting) ->Votes :
         '''
