@@ -21,6 +21,7 @@ from geniusweb.issuevalue.NumberValue import NumberValue
 from geniusweb.profile.utilityspace.LinearAdditive import LinearAdditive
 from geniusweb.profile.utilityspace.UtilitySpace import UtilitySpace
 from geniusweb.progress.ProgressTime import ProgressTime
+from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.references.Parameters import Parameters
 from geniusweb.references.ProfileRef import ProfileRef
 from geniusweb.references.ProtocolRef import ProtocolRef
@@ -54,44 +55,45 @@ class MyConn(ConnectionEnd[Inform, Action], DefaultListenable):
     
     def getActions(self)-> List[Action]:
         return self._actions
-    
+
 class Group33PartyTest(unittest.TestCase):
     pyson = ObjectMapper()
-    
+
     PARTY1 = PartyId("party1")
-    profileref = ProfileRef(URI("file:resources/japantrip1.json"))
-    PROFILE = ProfileRef(URI("file:resources/testprofile.json"))
+    profileref = ProfileRef(URI("file:japantrip1.json"))
+    PROFILE = ProfileRef(URI("file:testprofile.json"))
     protocolref = ProtocolRef(URI("SAOP"))
     mopacProtocol = ProtocolRef(URI("MOPAC"));
-    progress=ProgressTime(1000, datetime.fromtimestamp(12345))
+    #progress=ProgressTime(1000, datetime.fromtimestamp(12345))
+    progress=ProgressRounds(1000, 1, datetime.fromtimestamp(12345))
     parameters=Parameters()
     mopacSettings = Settings(PARTY1,  PROFILE, mopacProtocol,progress, parameters)
-    serialized =  Path('resources/testprofile.json').read_text("utf-8")
-    profile:UtilitySpace = pyson.parse(json.loads(serialized), LinearAdditive) #type:ignore     
+    serialized =  Path("testprofile.json").read_text("utf-8")
+    profile:UtilitySpace = pyson.parse(json.loads(serialized), LinearAdditive) #type:ignore
 
     def setUp(self):
         self.party=Group33Party()
         self.connection = MyConn()
         # we load the profile here too, to find a good bid
-    
+
 
     def test_smoke(self):
-        Group33Party()
-        
+        Group33Party.Group33Party()
+
     def testConnect(self):
         party=Group33Party()
         party.connect(self.connection)
         party.disconnect()
-        
-        
+
+
     def testSendInfo(self):
         settings  = Settings(self.PARTY1, self.profileref, self.protocolref, self.progress, self.parameters )
-        
+
         self.party.connect(self.connection)
         self.connection.notifyListeners(settings)
         self.party.disconnect()
         self.assertEquals([], self.connection.getActions())
-        
+
     def testSendYourTurn(self):
         self.assertEqual(0, len(self.connection.getActions()))
         settings  = Settings(self.PARTY1, self.profileref, self.protocolref, self.progress, self.parameters )
@@ -100,7 +102,7 @@ class Group33PartyTest(unittest.TestCase):
         self.connection.notifyListeners(settings)
         self.connection.notifyListeners(YourTurn())
         self.party.disconnect()
-        
+
         actions = self.connection.getActions()
         self.assertEquals(1, len(actions))
         self.assertTrue(isinstance(actions[0], Offer))
@@ -118,7 +120,7 @@ class Group33PartyTest(unittest.TestCase):
         self.connection.notifyListeners(ActionDone(offer))
         self.connection.notifyListeners(YourTurn())
         self.party.disconnect()
-        
+
         actions = self.connection.getActions()
         self.assertEquals(1, len(actions))
         self.assertTrue(isinstance(actions[0], Offer))
@@ -137,9 +139,10 @@ class Group33PartyTest(unittest.TestCase):
         self.assertTrue(isinstance(action,Votes))
         self.assertEqual(1, len(action.getVotes()))
         self.assertEqual(bid, next(iter(action.getVotes())).getBid())
-        
+
     def _findGoodBid(self)-> Bid:
         for bid in AllBidsList(self.profile.getDomain()):
             if self.profile.getUtility(bid) > 0.7:
-                     return bid;
+                print(self.profile.getUtility(bid))
+                return bid;
         raise ValueError("Test can not be done: there is no good bid with utility>0.7");
