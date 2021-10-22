@@ -29,7 +29,7 @@ from pyson.ObjectMapper import ObjectMapper
 from tudelft.utilities.listener.DefaultListenable import DefaultListenable
 from uri.uri import URI  # type: ignore 
 
-from ai2021.group33 import Group33Party
+from ai2021.group33.Group33Party import Group33Party
 
 
 class MyConn(ConnectionEnd[Inform, Action], DefaultListenable):
@@ -59,14 +59,14 @@ class Group33PartyTest(unittest.TestCase):
     pyson = ObjectMapper()
     
     PARTY1 = PartyId("party1")
-    profileref = ProfileRef(URI("file:test/resources/japantrip1.json"))
-    PROFILE = ProfileRef(URI("file:test/resources/testprofile.json"))
+    profileref = ProfileRef(URI("file:resources/japantrip1.json"))
+    PROFILE = ProfileRef(URI("file:resources/testprofile.json"))
     protocolref = ProtocolRef(URI("SAOP"))
     mopacProtocol = ProtocolRef(URI("MOPAC"));
     progress=ProgressTime(1000, datetime.fromtimestamp(12345))
     parameters=Parameters()
     mopacSettings = Settings(PARTY1,  PROFILE, mopacProtocol,progress, parameters)
-    serialized =  Path("test/resources/testprofile.json").read_text("utf-8")
+    serialized =  Path('resources/testprofile.json').read_text("utf-8")
     profile:UtilitySpace = pyson.parse(json.loads(serialized), LinearAdditive) #type:ignore     
 
     def setUp(self):
