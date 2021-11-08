@@ -4,8 +4,8 @@
 			"Personal Finance Policy": {
 				"DiscreteValueSetUtilities": {
 					"valueUtilities": {
-						"Strong_Stance": 0.62,
-						"Neutral_Stance": 0.2,
+						"Strong_Stance": 0.59,
+						"Neutral_Stance": 0.23,
 						"Weak_Stance": 0.18
 					}
 				}
@@ -13,26 +13,26 @@
 			"Economic Prospects Netherlands Policy": {
 				"DiscreteValueSetUtilities": {
 					"valueUtilities": {
-						"Strong_Stance": 0.65,
-						"Neutral_Stance": 0.23,
-						"Weak_Stance": 0.12
+						"Strong_Stance": 0.57,
+						"Neutral_Stance": 0.25,
+						"Weak_Stance": 0.18
 					}
 				}
 			},
 			"Dutch Culture Under Threat Policy": {
 				"DiscreteValueSetUtilities": {
 					"valueUtilities": {
-						"Strong_Stance": 0.34,
-						"Neutral_Stance": 0.27,
-						"Weak_Stance": 0.39
+						"Strong_Stance": 0.46,
+						"Neutral_Stance": 0.33,
+						"Weak_Stance": 0.21
 					}
 				}
 			}
 		},
 		"issueWeights": {
 			"Personal Finance Policy": 0.37,
-			"Economic Prospects Netherlands Policy": 0.39,
-			"Dutch Culture Under Threat Policy": 0.24
+			"Economic Prospects Netherlands Policy": 0.34,
+			"Dutch Culture Under Threat Policy": 0.29
 		}, 
 		"domain": {
 			"name": "politics",
@@ -60,6 +60,6 @@
 				}
 			}
 		},
-		"name": "politicsLabor"
+		"name": "profile1"
 	}
 }
