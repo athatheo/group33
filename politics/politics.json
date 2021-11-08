@@ -1,0 +1,26 @@
+{
+	"name": "politics",
+	"issuesValues": {
+		"Personal Finance Policy": {
+			"values": [
+				"Strong_Stance",
+				"Neutral_Stance",
+				"Weak_Stance"
+			]
+		},
+		"Economic Prospects Netherlands Policy": {
+			"values": [
+				"Strong_Stance",
+				"Neutral_Stance",
+				"Weak_Stance"
+			]
+		},
+		"Dutch Culture Under Threat Policy": {
+			"values": [
+				"Strong_Stance",
+				"Neutral_Stance",
+				"Weak_Stance"
+			]
+		}
+	}
+}
