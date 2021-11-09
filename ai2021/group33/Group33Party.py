@@ -29,6 +29,9 @@ from geniusweb.profileconnection.ProfileConnectionFactory import ProfileConnecti
 from geniusweb.progress.ProgressRounds import ProgressRounds
 from geniusweb.utils import val
 
+from collections import deque
+
+DEQUE_SIZE = 5
 
 class Group33Party(DefaultParty):
     """
@@ -43,6 +46,8 @@ class Group33Party(DefaultParty):
         # Acceptance Strategy params
         self.highTime = 0.99
         self.bidsBuffer = []
+        self.max_util = -1
+        self.bestBids = deque([])
         self.tempFlag = False
 
     # Override
@@ -144,6 +149,50 @@ class Group33Party(DefaultParty):
         raise Exception("Can not handle this type of profile")
 
     def _getBid(self, domain:Domain) -> Bid:
+        curProgress = self._progress.getCurrentRound() - 1
+        totalDuration = self._progress.getDuration() - 1
+        ## If it's early in the negotiation just return max utility bid
+        if curProgress < 0.09*totalDuration:
+            return self._get_max_bid(domain)
+        else:
+            if len(self.bestBids) < DEQUE_SIZE:
+                max_bid = self._get_max_bid(domain)
+                self.bestBids.append(max_bid)
+                return max_bid
+            return self._get_bid_in_window(domain)
+
+
+    """
+    Returns in a random fashion the best 5 bids according to their utility. 
+    The best 5 bids deteriorate over time, since the best bid is removed and one that is worse is added, to allow
+    conceding.
+    """
+    def _get_bid_in_window(self, domain:Domain) -> Bid:
+        curProgress = self._progress.getCurrentRound() - 1
+        totalDuration = self._progress.getDuration() - 1
+
+        allBids = AllBidsList(domain)
+        max_util = -1
+        max_bid = None
+        profile = self._profile.getProfile()
+        for bid in allBids:
+            util = profile.getUtility(bid)
+            if max_util < util < self.max_util:
+                max_util = util
+                max_bid = bid
+
+        self.max_util = max_util
+
+        self.bestBids.popleft()
+        self.bestBids.append(max_bid)
+
+        return self.bestBids[randint(1, 5)]
+
+
+    """
+    Returns the bid with maximum utility from the available bids
+    """
+    def _get_max_bid(self, domain:Domain) ->Bid:
         allBids = AllBidsList(domain)
         max_util = -1
         max_bid = None
@@ -154,8 +203,10 @@ class Group33Party(DefaultParty):
                 max_util = util
                 max_bid = bid
 
+        self.max_util = max_util
         return max_bid
-    
+
+
     def _vote(self, voting:Voting) ->Votes :
         '''
         @param voting the {@link Voting} object containing the options

@@ -130,6 +130,7 @@ class Group33PartyTest(unittest.TestCase):
         self.assertEqual(0, len(self.connection.getActions()))
         self.party.connect(self.connection);
         self.party.notifyChange(self.mopacSettings);
+
         bid = self._findGoodBid()
         offer = Offer(self.PARTY1, bid)
         self.party.notifyChange(Voting([offer],{self.PARTY1: 1}))
