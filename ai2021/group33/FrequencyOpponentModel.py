@@ -87,7 +87,7 @@ class FrequencyOpponentModel(UtilitySpace):
         return FrequencyOpponentModel(newDomain, dict.fromkeys(list(newDomain.getIssues()), Dict[Value, int]), Decimal(0), newResBid)
     
 
-    def withAction(self, action:Action, progress:Progress):
+    def withAction(self, action:Action, progress:Progress) -> FrequencyOpponentModel:
         '''
         Update this with a new action that was done by the opponent. 
         withDomain must be called before this
