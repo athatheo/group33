@@ -43,6 +43,7 @@ class Group33Party(DefaultParty):
         # Acceptance Strategy params
         self.highTime = 0.99
         self.bidsBuffer = []
+        self.tempFlag = False
 
     # Override
     def notifyChange(self, info: Inform):
@@ -102,10 +103,10 @@ class Group33Party(DefaultParty):
                 bid = self._getBid(self._profile.getProfile().getDomain())
                 if self._isGood(bid):
                     break
-            action = Offer(self._me, bid);
+            action = Offer(self._me, bid)
         self.getConnection().send(action)
 
-    def _isGood(self, bid:Bid)->bool:
+    def _isGood(self, bid:Bid, party=None)->bool:
         if bid == None:
             return False
         profile = self._profile.getProfile()
@@ -115,12 +116,12 @@ class Group33Party(DefaultParty):
             if curProgress < 0.5*totalDuration:
                 # Use next criterion
                 # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
-                nextBid = self._getRandomBid(self._profile.getProfile().getDomain())
+                nextBid = self._getBid(self._profile.getProfile().getDomain())
                 return profile.getUtility(bid) >= profile.getUtility(nextBid)
             if curProgress >= 0.5*totalDuration:
                 # Use combi criterion
                 # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
-                nextBid = self._getRandomBid(self._profile.getProfile().getDomain())
+                nextBid = self._getBid(self._profile.getProfile().getDomain())
                 ac_next = profile.getUtility(bid) >= profile.getUtility(nextBid)
                 ac_time = curProgress >= self.highTime
                 utils = []
@@ -131,15 +132,14 @@ class Group33Party(DefaultParty):
                         # multiple bids
                         utils.append(profile.getUtility(oneBid))
                 if len(utils) > 0:
-                    if False: # TODO - If the party has the most power, accept the maximum
+                    if party == self.powerParty[0] and len(self.powerParty) == 1: # If the party has
+                        # the most power, get maximum
                         ac_combi = profile.getUtility(bid) >= max(utils)
-                    elif True: # TODO - If the party doesnt have the most power, accept the average
+                    else: # If the party doesnt have the most power, get the average
                         ac_combi = profile.getUtility(bid) >= sum(utils)/len(utils)
                     return (ac_next or ac_time) and ac_combi
                 else:
                     return False
-
-
             #return profile.getUtility(bid) > 0.6
         raise Exception("Can not handle this type of profile")
 
@@ -169,6 +169,16 @@ class Group33Party(DefaultParty):
         val = self._settings.getParameters().get("maxPower");
         maxpower:int = val if isinstance(val,int) else  9999999;
 
+        # Get the party with most power
+        if self.tempFlag == False:
+            self.tempFlag = True
+        self.powers = voting.getPowers()
+        self.powerParty = [key for key, value in self.powers.items() if value == max(
+            self.powers.values())]
+
         votes:Set[Vote]  = set([Vote(self._me, offer.getBid(), minpower, maxpower)\
-                for offer in voting.getOffers() if self._isGood(offer.getBid())])
+                for offer in voting.getOffers() if self._isGood(offer.getBid(),
+                                                                party=offer.getActor()
+                                                                )
+                                ])
         return Votes(self._me, votes);

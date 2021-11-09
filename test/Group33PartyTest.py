@@ -78,7 +78,7 @@ class Group33PartyTest(unittest.TestCase):
 
 
     def test_smoke(self):
-        Group33Party.Group33Party()
+        Group33Party()
 
     def testConnect(self):
         party=Group33Party()
@@ -141,7 +141,7 @@ class Group33PartyTest(unittest.TestCase):
 
     def _findGoodBid(self)-> Bid:
         for bid in AllBidsList(self.profile.getDomain()):
-            if self.profile.getUtility(bid) > 0.7:
+            if self.profile.getUtility(bid) > 0.8:
                 print(self.profile.getUtility(bid))
                 return bid;
         raise ValueError("Test can not be done: there is no good bid with utility>0.7");
