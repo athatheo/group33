@@ -85,7 +85,7 @@ class Group33Party(DefaultParty):
 
     # Override
     def getCapabilities(self) -> Capabilities:
-        return Capabilities( set([ "SAOP", "Learn", "MOPAC"]), set(['geniusweb.profile.utilityspace.LinearAdditive']))
+        return Capabilities( set(["MOPAC"]), set(['geniusweb.profile.utilityspace.LinearAdditive']))
 
     # Override
     def getDescription(self) -> str:

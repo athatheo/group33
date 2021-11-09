@@ -65,7 +65,7 @@ class Group33PartyTest(unittest.TestCase):
     protocolref = ProtocolRef(URI("SAOP"))
     mopacProtocol = ProtocolRef(URI("MOPAC"));
     #progress=ProgressTime(1000, datetime.fromtimestamp(12345))
-    progress=ProgressRounds(1000, 1, datetime.fromtimestamp(12345))
+    progress=ProgressRounds(1000, 1, datetime.fromtimestamp(111122345))
     parameters=Parameters()
     mopacSettings = Settings(PARTY1,  PROFILE, mopacProtocol,progress, parameters)
     serialized =  Path("testprofile.json").read_text("utf-8")
