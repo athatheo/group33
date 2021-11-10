@@ -1,0 +1,65 @@
+{
+	"LinearAdditiveUtilitySpace": {
+		"issueUtilities": {
+			"Personal Finance Policy": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Strong_Stance": 0.4,
+						"Neutral_Stance": 0.25,
+						"Weak_Stance": 0.34
+					}
+				}
+			},
+			"Economic Prospects Netherlands Policy": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Strong_Stance": 0.55,
+						"Neutral_Stance": 0.2,
+						"Weak_Stance": 0.25
+					}
+				}
+			},
+			"Dutch Culture Under Threat Policy": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Strong_Stance": 0.23,
+						"Neutral_Stance": 0.23,
+						"Weak_Stance": 0.55
+					}
+				}
+			}
+		},
+		"issueWeights": {
+			"Personal Finance Policy": 0.26,
+			"Economic Prospects Netherlands Policy": 0.37,
+			"Dutch Culture Under Threat Policy": 0.37
+		}, 
+		"domain": {
+			"name": "group33",
+			"issuesValues": {
+				"Personal Finance Policy": {
+					"values": [
+						"Strong_Stance",
+						"Neutral_Stance",
+						"Weak_Stance"
+					]
+				},
+				"Economic Prospects Netherlands Policy": {
+					"values": [
+						"Strong_Stance",
+						"Neutral_Stance",
+						"Weak_Stance"
+					]
+				},
+				"Dutch Culture Under Threat Policy": {
+					"values": [
+						"Strong_Stance",
+						"Neutral_Stance",
+						"Weak_Stance"
+					]
+				}
+			}
+		},
+		"name": "profile2"
+	}
+}
