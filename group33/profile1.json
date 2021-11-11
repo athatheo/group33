@@ -48,7 +48,7 @@
 					}
 				}
 			},
-			"Coperate Tax Rate": {
+			"Corporate Tax Rate": {
 				"DiscreteValueSetUtilities": {
 					"valueUtilities": {
 						"20%": 0.66,
@@ -91,7 +91,7 @@
 			"Minimum Wage": 0.19,
 			"Retirement Age": 0.10,
 			"Military": 0.04,
-			"Coperate Tax Rate": 0.07,
+			"Corporate Tax Rate": 0.07,
 			"Energy": 0.25,
 			"Death Penalty": 0.05,
 			"Dutch Culture Under Threat Policy": 0.10
@@ -136,7 +136,7 @@
 						"Foreign Intervention"
 					]
 				},
-				"Corperate Tax Rate": {
+				"Corporate Tax Rate": {
 					"values": [
 						"20%",
 						"25%",
