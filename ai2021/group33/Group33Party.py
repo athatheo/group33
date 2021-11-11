@@ -181,12 +181,15 @@ class Group33Party(DefaultParty):
                 max_util = util
                 max_bid = bid
 
+        if max_bid is None:
+            return self.bestBids[randint(0, 4)]
+
         self.max_util = max_util
 
         self.bestBids.popleft()
         self.bestBids.append(max_bid)
 
-        return self.bestBids[randint(1, 5)]
+        return self.bestBids[randint(0, 4)]
 
 
     """
@@ -215,7 +218,7 @@ class Group33Party(DefaultParty):
         '''
         val = self._settings.getParameters().get("minPower");
         # TODO - This should be set to the minimum power in order for a government to form
-        minpower:int = val if isinstance(val, int) else 2
+        minpower:int = val if isinstance(val, int) else 4
         # TODO - This should be set to the total power of all parties
         val = self._settings.getParameters().get("maxPower");
         maxpower:int = val if isinstance(val,int) else  9999999;

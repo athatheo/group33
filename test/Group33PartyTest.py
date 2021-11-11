@@ -142,7 +142,22 @@ class Group33PartyTest(unittest.TestCase):
 
     def _findGoodBid(self)-> Bid:
         for bid in AllBidsList(self.profile.getDomain()):
-            if self.profile.getUtility(bid) > 0.8:
+            if self.profile.getUtility(bid) > 0.7:
                 print(self.profile.getUtility(bid))
                 return bid;
         raise ValueError("Test can not be done: there is no good bid with utility>0.7");
+
+    def testDecrUtil(self):
+        self.assertEqual(0, len(self.connection.getActions()))
+        settings  = Settings(self.PARTY1, self.profileref, self.protocolref, self.progress, self.parameters )
+
+        self.party.connect(self.connection)
+        self.connection.notifyListeners(settings)
+        for _ in range(150):
+            self.connection.notifyListeners(YourTurn())
+        self.party.disconnect()
+
+        actions = self.connection.getActions()
+        self.assertEquals(1, len(actions))
+        self.assertTrue(isinstance(actions[0], Offer))
+        print("party did an offer: "+repr(actions[0]))
