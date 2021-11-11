@@ -86,15 +86,15 @@
 			}
 		},
 		"issueWeights": {
-			"Personal Finance Policy": 0.37,
-			"Economic Prospects Netherlands Policy": 0.34,
-			"Minimum Wage": 0.29,
-			"Retirement Age": 0.29,
-			"Military": 0.29,
-			"Coperate Tax Rate": 0.29,
-			"Energy": 0.29,
-			"Death Penalty": 0.29,
-			"Dutch Culture Under Threat Policy": 0.29
+			"Personal Finance Policy": 0.11,
+			"Economic Prospects Netherlands Policy": 0.09,
+			"Minimum Wage": 0.19,
+			"Retirement Age": 0.10,
+			"Military": 0.04,
+			"Coperate Tax Rate": 0.07,
+			"Energy": 0.25,
+			"Death Penalty": 0.05,
+			"Dutch Culture Under Threat Policy": 0.10
 		}, 
 		"domain": {
 			"name": "group33",
