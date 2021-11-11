@@ -19,6 +19,62 @@
 					}
 				}
 			},
+			"Minimum Wage": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"10.91": 0.27,
+						"10.51": 0.73,
+						"10": 0.19,
+						"11.50": 0.14
+					}
+				}
+			},
+			"Retirement Age": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"66": 0.73,
+						"68": 0.44,
+						"70": 0.37,
+						"64": 0.54
+					}
+				}
+			},
+			"Military": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Defensive": 0.26,
+						"Abolish": 0.11,
+						"Foreign Intervention": 0.73
+					}
+				}
+			},
+			"Corporate Tax Rate": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"20%": 0.16,
+						"25%": 0.28,
+						"30%": 0.60
+					}
+				}
+			},
+			"Energy": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Status Quo": 0.22,
+						"Invest Nuclear": 0.52,
+						"Invest Renewables": 0.25,
+						"Invest Fossil Fuels": 0.33
+					}
+				}
+			},
+			"Death Penalty": {
+				"DiscreteValueSetUtilities": {
+					"valueUtilities": {
+						"Reinstate": 0.20,
+						"Banned": 0.80
+					}
+				}
+			},
 			"Dutch Culture Under Threat Policy": {
 				"DiscreteValueSetUtilities": {
 					"valueUtilities": {
@@ -30,9 +86,15 @@
 			}
 		},
 		"issueWeights": {
-			"Personal Finance Policy": 0.37,
-			"Economic Prospects Netherlands Policy": 0.39,
-			"Dutch Culture Under Threat Policy": 0.24
+			"Personal Finance Policy": 0.19,
+            "Economic Prospects Netherlands Policy": 0.09,
+            "Minimum Wage":0.10,
+            "Retirement Age": 0.19,
+            "Military": 0.04,
+            "Corporate Tax Rate": 0.18,
+            "Energy": 0.03,
+            "Death Penalty": 0.07,
+            "Dutch Culture Under Threat Policy": 0.11
 		}, 
 		"domain": {
 			"name": "group33",
@@ -49,6 +111,50 @@
 						"Strong_Stance",
 						"Neutral_Stance",
 						"Weak_Stance"
+					]
+				},
+				"Minimum Wage": {
+					"values": [
+						"10.91",
+						"10.51",
+						"10",
+						"11.50"
+					]
+				},
+				"Retirement Age": {
+					"values": [
+						"66",
+						"68",
+						"70",
+						"64"
+					]
+				},
+				"Military": {
+					"values": [
+						"Defensive",
+						"Abolish",
+						"Foreign Intervention"
+					]
+				},
+				"Corporate Tax Rate": {
+					"values": [
+						"20%",
+						"25%",
+						"30%"
+					]
+				},
+				"Energy": {
+					"values": [
+						"Status Quo",
+						"Invest Nuclear",
+						"Invest Renewables",
+						"Invest Fossil Fuels"
+					]
+				},
+				"Death Penalty": {
+					"values": [
+						"Reinstate",
+						"Banned"
 					]
 				},
 				"Dutch Culture Under Threat Policy": {
