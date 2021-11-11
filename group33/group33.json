@@ -15,6 +15,50 @@
 				"Weak_Stance"
 			]
 		},
+		"Minimum Wage": {
+			"values": [
+				"10.91",
+				"10.51",
+				"10",
+				"11.50"
+			]
+		},
+		"Retirement Age": {
+			"values": [
+				"66",
+				"68",
+				"70",
+				"64"
+			]
+		},
+		"Military": {
+			"values": [
+				"Defensive",
+				"Abolish",
+				"Foreign Intervention"
+			]
+		},
+		"Corperate Tax Rate": {
+			"values": [
+				"20%",
+				"25%",
+				"30%"
+			]
+		},
+		"Energy": {
+			"values": [
+				"Status Quo",
+				"Invest Nuclear",
+				"Invest Renewables",
+				"Invest Fossil Fuels"
+			]
+		},
+		"Death Penalty": {
+			"values": [
+				"Reinstate",
+				"Banned"
+			]
+		},
 		"Dutch Culture Under Threat Policy": {
 			"values": [
 				"Strong_Stance",
