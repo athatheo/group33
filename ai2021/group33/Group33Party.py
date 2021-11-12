@@ -46,7 +46,9 @@ class Group33Party(DefaultParty):
         # Acceptance Strategy params
         self.highTime = 0.99
         self.bidsBuffer = []
-        self.max_util = -1
+        self.max_util = 1
+        self.max_bid = None
+        self.utils = []
         self.bestBids = deque([])
         self.tempFlag = False
 
@@ -89,7 +91,9 @@ class Group33Party(DefaultParty):
 
     # Override
     def getDescription(self) -> str:
-        return "Offers random bids until a bid with sufficient utility is offered. Parameters minPower and maxPower can be used to control voting behaviour."
+        return "Offers varying bids, starting from the maximum utility, and gradually reducing " \
+               "the target utility in order to secure an agreement. Uses a combined acceptance " \
+               "criterions. Parameters minPower and maxPower can be used to control voting behaviour."
 
     # Override
     def terminate(self):
@@ -120,12 +124,10 @@ class Group33Party(DefaultParty):
             totalDuration = self._progress.getDuration() - 1
             if curProgress < 0.5*totalDuration:
                 # Use next criterion
-                # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
                 nextBid = self._getBid(self._profile.getProfile().getDomain())
                 return profile.getUtility(bid) >= profile.getUtility(nextBid)
             if curProgress >= 0.5*totalDuration:
                 # Use combi criterion
-                # TODO: Change the way of calculating the nextBid, based on the Bidding Strategy
                 nextBid = self._getBid(self._profile.getProfile().getDomain())
                 ac_next = profile.getUtility(bid) >= profile.getUtility(nextBid)
                 ac_time = curProgress >= self.highTime
@@ -145,22 +147,44 @@ class Group33Party(DefaultParty):
                     return (ac_next or ac_time) and ac_combi
                 else:
                     return False
-            #return profile.getUtility(bid) > 0.6
         raise Exception("Can not handle this type of profile")
 
     def _getBid(self, domain:Domain) -> Bid:
+
+        profile = self._profile.getProfile()
+        # In the first run of the function, calculate and store all bids with their utilities
+        if self.max_bid == None:
+            # Get all bids
+            self.allBids = AllBidsList(domain)
+            # Calculate and store the utility of each bid
+            for bid in self.allBids:
+                self.utils.append(profile.getUtility(bid))
+
+           # Find the order in which the bids are sorted
+            self.order = [bid for _,bid in sorted(zip(self.utils,list(range(len(self.utils)))),
+                                                        reverse=True)]
+            # Sort the bids
+            self.allBids_temp = []
+            allBids_list =  list(self.allBids)
+            for i in range(len(self.order)):
+                self.allBids_temp.append(allBids_list[self.order[i]])
+            self.utils.sort(reverse=True)
+            self.allBids = self.allBids_temp
+            # Get the maximum bid
+            self.max_bid = self._get_max_bid(domain)
+
+            # Initialize the bestBids deque
+            for _ in range(DEQUE_SIZE):
+                self.bestBids.append(self.max_bid)
+
         curProgress = self._progress.getCurrentRound() - 1
         totalDuration = self._progress.getDuration() - 1
-        ## If it's early in the negotiation just return max utility bid
+        # If it's early in the negotiation just return max utility bid
         if curProgress < 0.09*totalDuration:
-            return self._get_max_bid(domain)
+            return self.max_bid
         else:
-            if len(self.bestBids) < DEQUE_SIZE:
-                max_bid = self._get_max_bid(domain)
-                self.bestBids.append(max_bid)
-                return max_bid
-            return self._get_bid_in_window(domain)
-
+            self.max_bid = self._get_bid_in_window(domain)
+            return self.max_bid
 
     """
     Returns in a random fashion the best 5 bids according to their utility. 
@@ -168,18 +192,18 @@ class Group33Party(DefaultParty):
     conceding.
     """
     def _get_bid_in_window(self, domain:Domain) -> Bid:
-        curProgress = self._progress.getCurrentRound() - 1
-        totalDuration = self._progress.getDuration() - 1
-
-        allBids = AllBidsList(domain)
+        allBids = self.allBids
         max_util = -1
         max_bid = None
         profile = self._profile.getProfile()
-        for bid in allBids:
-            util = profile.getUtility(bid)
-            if max_util < util < self.max_util:
+        for idx, bid in enumerate(allBids):
+            util = self.utils[idx]
+            if util < self.max_util:
                 max_util = util
                 max_bid = bid
+                self.allBids = self.allBids[idx+1:]
+                self.utils = self.utils[idx+1:]
+                break
 
         if max_bid is None:
             return self.bestBids[randint(0, 4)]
@@ -188,27 +212,24 @@ class Group33Party(DefaultParty):
 
         self.bestBids.popleft()
         self.bestBids.append(max_bid)
-
+        self.getReporter().log(logging.INFO,profile.getUtility(max_bid))
         return self.bestBids[randint(0, 4)]
-
 
     """
     Returns the bid with maximum utility from the available bids
     """
     def _get_max_bid(self, domain:Domain) ->Bid:
-        allBids = AllBidsList(domain)
+        allBids = self.allBids
         max_util = -1
         max_bid = None
-        profile = self._profile.getProfile()
-        for bid in allBids:
-            util = profile.getUtility(bid)
+        for idx,bid in enumerate(allBids):
+            util = self.utils[idx]
             if util > max_util:
                 max_util = util
                 max_bid = bid
 
         self.max_util = max_util
         return max_bid
-
 
     def _vote(self, voting:Voting) ->Votes :
         '''
@@ -217,9 +238,7 @@ class Group33Party(DefaultParty):
         @return our next Votes.
         '''
         val = self._settings.getParameters().get("minPower");
-        # TODO - This should be set to the minimum power in order for a government to form
-        minpower:int = val if isinstance(val, int) else 4
-        # TODO - This should be set to the total power of all parties
+        minpower:int = val if isinstance(val, int) else 2
         val = self._settings.getParameters().get("maxPower");
         maxpower:int = val if isinstance(val,int) else  9999999;
 

@@ -60,7 +60,8 @@ class Group33PartyTest(unittest.TestCase):
     pyson = ObjectMapper()
 
     PARTY1 = PartyId("party1")
-    profileref = ProfileRef(URI("file:japantrip1.json"))
+    #profileref = ProfileRef(URI("file:japantrip1.json"))
+    profileref = ProfileRef(URI("file:profile1.json"))
     PROFILE = ProfileRef(URI("file:testprofile.json"))
     protocolref = ProtocolRef(URI("SAOP"))
     mopacProtocol = ProtocolRef(URI("MOPAC"));
@@ -142,7 +143,7 @@ class Group33PartyTest(unittest.TestCase):
 
     def _findGoodBid(self)-> Bid:
         for bid in AllBidsList(self.profile.getDomain()):
-            if self.profile.getUtility(bid) > 0.7:
+            if self.profile.getUtility(bid) > 0.8:
                 print(self.profile.getUtility(bid))
                 return bid;
         raise ValueError("Test can not be done: there is no good bid with utility>0.7");
@@ -153,11 +154,11 @@ class Group33PartyTest(unittest.TestCase):
 
         self.party.connect(self.connection)
         self.connection.notifyListeners(settings)
-        for _ in range(150):
+        for _ in range(1000):
             self.connection.notifyListeners(YourTurn())
         self.party.disconnect()
 
         actions = self.connection.getActions()
-        self.assertEquals(1, len(actions))
+        self.assertEquals(1000, len(actions))
         self.assertTrue(isinstance(actions[0], Offer))
         print("party did an offer: "+repr(actions[0]))
